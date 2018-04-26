@@ -1,0 +1,63 @@
+.sticky-left-side {
+  background-color: rgba(233, 52, 54, 0.06);
+}
+.sticky-left-side .logo {
+  background: #e93436;
+}
+.simu_wraper .header-section {
+  background: #e93436;
+}
+.simu_wraper .header-section .menu-right .notification-menu li a {
+  background: #e93436;
+}
+.search input {
+  background: #ed595a;
+}
+#login-panel #login-btn {
+  background: #e93436;
+}
+#login-panel #login-btn:hover {
+  background-color: #ed595a;
+}
+#login-panel #reLogin-btns #re-login-btn {
+  border: 1px solid #e93436;
+  background: #e93436;
+}
+#login-panel #reLogin-btns #re-login-btn:hover {
+  background-color: #ed595a;
+}
+.custom-nav li .fa,
+.custom-nav li .menu_title {
+  color: #e93436;
+}
+.custom-tab li.active a,
+.custom-tab li:hover a {
+  color: #e93436 !important;
+}
+.custom-tab li.active a span,
+.custom-tab li:hover a span {
+  color: #e93436 !important;
+}
+.custom-tab li.active .fa,
+.custom-tab li:hover .fa {
+  color: #e93436;
+}
+.custom-tab li.active {
+  border-bottom-color: #e93436 !important;
+}
+.spinner {
+  background-color: #e93436;
+}
+.btn-primary {
+  background-color: #e93436;
+  border-color: #e71d1f;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  background-color: #ed595a;
+  border-color: #ed595a;
+}

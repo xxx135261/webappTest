@@ -1,0 +1,87 @@
+//顶栏
+.sticky-left-side{
+  background-color: fadeout(@main-color, 94%);
+  .logo{
+    background: @main-color;
+  }
+}
+.simu_wraper .header-section{
+  background:  @main-color;
+  .menu-right .notification-menu li a{
+    background:  @main-color;
+  }
+}
+
+//搜索
+.search {
+  input {
+    background: @main-color-light;
+  }
+}
+
+//登陆/重新登录
+#login-panel {
+  //登陆
+  #login-btn {
+    background: @main-color;
+    &:hover {
+      background-color: @main-color-light;
+    }
+  }
+  //
+  //重新登录
+  #reLogin-btns {
+    #re-login-btn {
+      border: 1px solid @main-color;
+      background: @main-color;
+      &:hover {
+        background-color: @main-color-light;
+      }
+    }
+  }
+}
+
+//左边栏
+.custom-nav{
+  li{
+    .fa, .menu_title{
+      color: @main-color;
+    }
+  }
+}
+
+//tab栏
+.custom-tab{
+  li{
+    &.active, &:hover{
+      a{
+        color: @main-color!important;
+        span{
+          color: @main-color!important;
+        }
+      }
+      .fa{
+        color: @main-color;
+      }      
+    }
+    &.active{
+      border-bottom-color:  @main-color!important;
+    }
+  }
+}
+
+//loading
+.spinner {
+  background-color: @main-color;
+}
+
+//明细按钮
+.btn-primary {
+  background-color: @main-color;
+  border-color: @main-color-dark;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary.focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+  background-color: @main-color-light;
+  border-color: @main-color-light;
+}
