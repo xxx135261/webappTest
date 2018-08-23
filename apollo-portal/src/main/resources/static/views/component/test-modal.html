@@ -1,0 +1,179 @@
+<div id="testModal" class="modal fade" valdr-type="Item">
+    <div class="modal-dialog">
+        <div class="modal-content panel-primary">
+            <h4 class="modal-title">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 pull-left">
+                        <!--master branch nav tabs-->
+                        <ul class="nav nav-tabs">
+                            <li ng-click="switchTest(testConfig, 'database')">
+                                <a ng-class="{node_active:testConfig.testType == 'database'}">
+                                    数据库地址
+                                </a>
+                            </li>
+                            <li ng-click="switchTest(testConfig, 'cache')">
+                                <a ng-class="{node_active:testConfig.testType == 'cache'}">
+                                    缓存
+                                </a>
+                            </li>
+                            <li ng-click="switchTest(testConfig, 'cluster')">
+                                <a ng-class="{node_active:testConfig.testType == 'cluster'}">
+                                    集群服务
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </h4>
+
+            <form name="databaseForm" ng-show="testConfig.testType == 'database'">
+                <div  name="database-test" >
+                    <div class="modal-body form-horizontal">
+                        <div class="form-group">
+                            <div class="btn-group">
+                                <label ng-repeat="value in vm.values">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="sqlRadio" ng-model="vm.selection" ng-value="value"
+                                           ng-checked="vm.selection.SQLType == value.SQLType"
+                                           ng-change="doDbChange()"/>{{value.SQLType}}&nbsp;&nbsp;
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                Driver
+                            </label>
+                            <div class="col-sm-10" valdr-form-group>
+                                <input name="driver" class="form-control" ng-model="driver" tabindex="1"
+                                       ng-required="true" ng-disabled="!override">
+                                </input>
+
+                                <input type="checkbox" name="override" ng-model="override"
+                                       ng-init="override = false">Override
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                URL
+                            </label>
+                            <div class="col-sm-10" valdr-form-group>
+                                <select name="url" class="form-control" ng-model="url" tabindex="1"
+                                        ng-required="true" ng-options="url.item.value for url in items">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                Username
+                            </label>
+                            <div class="col-sm-10" valdr-form-group>
+                                <input name="username" class="form-control" ng-model="username" tabindex="1"
+                                       ng-required="true">
+                                </input>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                Password
+                            </label>
+                            <div class="col-sm-10" valdr-form-group>
+                                <input name="password" class="form-control" ng-model="password" tabindex="1"
+                                       ng-required="true">
+                                </input>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            取消
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="testDbConnection(driver,
+                            url.item.value, username, password)"
+                                ng-disabled="databaseForm.$invalid">
+                            测试连接
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <form name="cacheForm" ng-show="testConfig.testType == 'cache'">
+                <div name="cache-test">
+                    <div class="modal-body form-horizontal">
+
+                        <div class="form-group">
+                            <div class="btn-group">
+                                <label ng-repeat="value in cacheDatabase.values">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="cacheRadio" ng-model="cacheDatabase.selection" ng-value="value"
+                                           ng-checked="cacheDatabase.selection.cacheType == value.cacheType"
+                                           ng-change="doCacheChange()"/>{{value.cacheType}}&nbsp;&nbsp;
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                Port
+                            </label>
+                            <div class="col-sm-10" valdr-form-group>
+                                <input name="cachePort" class="form-control" ng-model="cachePort" tabindex="1"
+                                       ng-required="true" ng-disabled="!overridePort">
+                                </input>
+
+                                <input type="checkbox" name="overridePort" ng-model="overridePort"
+                                       ng-init="overridePort = false">Override
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                Host
+                            </label>
+                            <div class="col-sm-10" valdr-form-group>
+                                <select name="cacheHost" class="form-control" ng-model="cacheHost" tabindex="1"
+                                        ng-required="true" ng-options="host.item.value for host in items">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">
+                                Password
+                            </label>
+                            <div class="col-sm-10" valdr-form-group>
+                                <input name="cachePassword" class="form-control" ng-model="cachePassword" tabindex="1"
+                                       ng-required="true">
+                                </input>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            取消
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="testCacheConnection(cachePort,
+                            cacheHost.item.value, cachePassword)"
+                                ng-disabled="cacheForm.$invalid">
+                            测试连接
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

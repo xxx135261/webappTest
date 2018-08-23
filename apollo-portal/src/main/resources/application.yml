@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: apollo-portal
+  profiles:
+    active: ${apollo_profile}
+  datasource:
+    continue-on-error: true
+    platform: h2
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+
+server:
+  port: 9080
+  
+logging:
+  file: /opt/logs/100003173/apollo-portal.log
+
+endpoints:
+  health:
+    sensitive: false
+management:
+  security:
+    enabled: false
+  health:
+    status:
+      order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP 
+
+liquibase:
+  change-log: classpath:liquibase/master.xml
+  user:
+  password:
+  url: ${spring_datasource_url}
+  enabled: true
+  drop-first: false

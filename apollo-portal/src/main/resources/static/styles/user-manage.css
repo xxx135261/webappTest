@@ -1,0 +1,21 @@
+
+table, th ,tr , td {
+    width: 800px;
+    height: 40px;
+    margin:0 auto;
+    border: 1px solid #fff;
+    border-collapse: collapse;
+    padding: 5px;
+}
+
+.panel-heading2 {
+    padding: 10px 15px;
+    border-top: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    font-size: 16px;
+    border-color: #eff2f7;
+    font-weight: 300
+}
+
+
