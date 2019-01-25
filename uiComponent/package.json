@@ -1,31 +1,30 @@
 {
-  "name": "ferm3-ui-comps",
-  "version": "0.1.9",
-  "publishConfig": {
-    "registry": "http://192.168.102.232:6060/repository/rd_center/"
-  },
-  "description": "ferm3 组件库",
-  "main": "index.js",
-  "author": "gf",
+  "name": "uiComponent",
+  "version": "0.0.1",
+  "private": true,
+  "description": "uiComonent",
+  "author": "xxx",
   "license": "ISC",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "jquery": "^2.2.4",
+    "vuex": "^3.0.1",
     "h_ui": "^1.0.27",
     "lodash.clonedeep": "^4.5.0",
     "marked": "^0.6.0",
     "vue": "^2.5.22"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.3.0",
-    "@vue/cli-service": "^3.3.0",
-    "babel-plugin-import": "^1.11.0",
-    "less": "^3.9.0",
+    "@vue/cli-plugin-babel": "^3.1.1",
+    "@vue/cli-service": "^3.1.4",
+    "html-loader": "^0.5.5",
+    "less": "^3.0.4",
     "less-loader": "^4.1.0",
-    "vue-template-compiler": "^2.5.22",
-    "vue-router": "^3.0.2"
+    "markdown-loader": "^4.0.0",
+    "vue-template-compiler": "^2.5.17"
   },
   "postcss": {
     "plugins": {
@@ -36,8 +35,5 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ],
-  "config": {
-    "baseModule": "ferm3-ui-common-simple"
-  }
+  ]
 }
