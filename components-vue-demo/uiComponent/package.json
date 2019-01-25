@@ -1,0 +1,43 @@
+{
+  "name": "ferm3-ui-comps",
+  "version": "0.1.9",
+  "publishConfig": {
+    "registry": "http://192.168.102.232:6060/repository/rd_center/"
+  },
+  "description": "ferm3 组件库",
+  "main": "index.js",
+  "author": "gf",
+  "license": "ISC",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "h_ui": "^1.0.27",
+    "lodash.clonedeep": "^4.5.0",
+    "marked": "^0.6.0",
+    "vue": "^2.5.22"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.3.0",
+    "@vue/cli-service": "^3.3.0",
+    "babel-plugin-import": "^1.11.0",
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0",
+    "vue-template-compiler": "^2.5.22",
+    "vue-router": "^3.0.2"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "config": {
+    "baseModule": "ferm3-ui-common-simple"
+  }
+}
