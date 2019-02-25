@@ -8,7 +8,7 @@
         icon="android-close"
         @on-change="debouncedSearch"
         @on-click="keyword = '';fuzzySearch('')"
-        placeholder="输入关键词进行检索..."
+        :placeholder="placeholder"
       ></h-input>
       <h-button-group size="small">
         <h-button @click="toggleExpand(true)" title="展开全部">
@@ -107,6 +107,10 @@ export default {
     highlight: {
       type: Boolean,
       default: true
+    },
+    placeholder: {
+      type: String,
+      default: '输入关键词进行检索...'
     }
   },
   data() {

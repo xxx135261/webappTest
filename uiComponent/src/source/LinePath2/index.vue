@@ -1,10 +1,19 @@
 <template>
-<div class="line-path2">
-  <div class="item" v-for="(item,i) in points" :key="i" @click="handleClick(i)" :style="{bottom:item.y+'px',left:item.x+'px',color:item.c}">{{d[i].d}}
-    <span>{{d[i].n}}</span>
+  <div class="line-path2">
+    <div
+      class="item"
+      v-for="(item,i) in points"
+      :key="i"
+      @click="handleClick(i)"
+      :style="{bottom:item.y+'px',left:item.x+'px',color:item.c}"
+    >
+      {{d[i].d}}
+      <span>{{d[i].n}}</span>
+    </div>
+    <div class="item" :style="{bottom:140+'px',left:704+'px'}">
+      <span>至今</span>
+    </div>
   </div>
-  <div class="item" :style="{bottom:140+'px',left:704+'px'}"><span>至今</span></div>
-</div>
 </template>
 
 <script>

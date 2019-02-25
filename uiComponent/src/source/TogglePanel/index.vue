@@ -7,17 +7,11 @@
 
 <script>
 export default {
-  props: {
-    num:Number,
-    con:String,
-    isOpen:{
-      type:Boolean,
-      default:false
-    }
-  },
+  props: ["num", "con"],
   data() {
     return {
       h: 0,
+      isOpen: false,
       timer: 0
     };
   },

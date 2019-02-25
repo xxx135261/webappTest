@@ -1,84 +1,124 @@
 <template>
-  <div class="md">
-    <div class="md-toc" :class="posClz">
+  <div class="md" :class="'by-'+tocPos">
+    <div class="md-con" ref="con" v-html="htmlStr" @scroll="checkTopVisible"></div>
+    <div class="md-toc">
       <div
         class="md-toc-item mono"
+        :class="{'active': item.active, 'hide': isHide(item)}"
         v-for="(item, i) in tocItems"
         :key="i"
-        :style="{'padding-left': (item.level * 15 + 15) + 'px'}"
+        :style="tocItemStyle(item, i)"
         @click="handleClick(item.anchor)"
       >
-        <span :class="{'text': true, 'active': item.active}">{{item.name}}</span>
+        <h-icon
+          :class="{'toggle-btn': true, 'toggle-collapse': !item.expand}"
+          name="ios-arrow-forward"
+          v-if="foldable && isParent(i)"
+          @click.native.stop="toggle(item, i)"
+        ></h-icon>
+        <span :class="{'text': true}">{{item.name}}</span>
       </div>
     </div>
-    <div class="md-con" :class="posClz" ref="con" v-html="htmlStr" @scroll="checkTopVisible"></div>
   </div>
 </template>
 
 <script>
-import marked from 'marked/marked.min.js';
+import marked from "marked/marked.min.js";
 
 const tags = ["h1", "h2", "h3", "h4", "h5", "h6"];
 
 export default {
-  name: 'MdDoc',
+  name: "MdDoc",
   data() {
     return {
-      htmlStr: '',
+      htmlStr: "",
       tocItems: [],
       timer: null,
       /* 用于点击目录项时取消scroll回调 */
-      lock: false
-    }
+      lock: false,
+      /* 文档中最高级别的标题标签对应的层级 */
+      minLevel: 0
+    };
   },
   props: {
     text: {
       type: String,
-      default: ''
+      default: ""
     },
     tocPos: {
       type: String,
-      default: 'right',
+      default: "right",
       validator: function (val) {
-        return ['left', 'right'].indexOf(val) !== -1;
+        return ["left", "right"].indexOf(val) !== -1;
       }
+    },
+    foldable: {
+      type: Boolean,
+      default: true
     }
   },
   watch: {
     text: {
       immediate: true,
       handler(newVal) {
-        this.htmlStr = newVal ? marked(newVal) : '';
+        this.htmlStr = newVal ? marked(newVal) : "";
         this.$nextTick(() => {
           this.genToc();
+          this.checkTopVisible();
         });
       }
-    }
-  },
-  computed: {
-    posClz() {
-      return { 'by-left': this.tocPos === 'left', 'by-right': this.tocPos === 'right' };
     }
   },
   methods: {
     genToc() {
       const con = this.$refs.con;
-      tags.forEach(tag => {
+      let minLevel;
+      let index = 0;
+      // 标记标题
+      tags.forEach((tag, i) => {
         let els = con.getElementsByTagName(tag);
         Array.prototype.forEach.call(els, el => {
-          el.setAttribute('anchor-id', el.innerText);
-          el.setAttribute('toc-item', true);
+          el.setAttribute("anchor-id", el.innerText + '-' + index++);
+          el.setAttribute("toc-item", true);
         });
-      })
-      const hTagEls = con.querySelectorAll('[toc-item=true]');
+        if (els.length > 0 && minLevel === undefined) {
+          minLevel = i;
+        }
+      });
+      this.minLevel = minLevel;
+
+      const hTagEls = con.querySelectorAll("[toc-item=true]");
       const tocItems = [];
-      hTagEls.forEach(hTag => {
+      // 生成目录列表对象
+      hTagEls.forEach((hTag, i) => {
         tocItems.push({
-          anchor: hTag.innerText,
+          // 锚点id
+          anchor: hTag.attributes["anchor-id"].value,
           name: hTag.innerText,
-          level: tags.indexOf(hTag.tagName.toLowerCase())
+          level: tags.indexOf(hTag.tagName.toLowerCase()),
+          // 父级目录项序号
+          parent: -1,
+          // 是否展开子目录项
+          expand: true,
+          // 是否显示当前目录项
+          show: true
         });
       });
+
+      // 生成目录列表项父级关系
+      tocItems.forEach((item, i) => {
+        if (i < tocItems.length - 1) {
+          const items = tocItems.slice(i + 1);
+          for (let j in items) {
+            let nextItem = items[j];
+            if (item.level < nextItem.level) {
+              nextItem.parent = i;
+            } else {
+              break;
+            }
+          }
+        }
+      })
       this.tocItems = tocItems;
     },
     handleClick(anchor) {
@@ -87,13 +127,16 @@ export default {
       if (el) {
         let scrollDist = con.scrollHeight - con.clientHeight;
         if (scrollDist > 0) {
-          con.scrollTop = el.offsetTop <= scrollDist ? el.offsetTop : scrollDist;
-          this.tocItems.forEach(item => this.$set(item, 'active', false));
-          let activeItem = this.tocItems.find(item => item.name == el.innerText);
-          this.$set(activeItem, 'active', true);
+          con.scrollTop =
+            el.offsetTop <= scrollDist ? el.offsetTop : scrollDist;
+          this.tocItems.forEach(item => this.$set(item, "active", false));
+          let activeItem = this.tocItems.find(
+            item => item.anchor == el.attributes["anchor-id"].value
+          );
+          this.$set(activeItem, "active", true);
           this.$nextTick(() => {
             this.lock = true;
-          })
+          });
         }
       }
     },
@@ -107,84 +150,103 @@ export default {
           }
           const con = this.$refs.con;
           const scrollTop = con.scrollTop;
-          const hTagEls = con.querySelectorAll('[toc-item=true]');
-          let topEl = Array.prototype.find.call(hTagEls, hTag => hTag.offsetTop >= scrollTop);
+          const hTagEls = con.querySelectorAll("[toc-item=true]");
+          let topEl = Array.prototype.find.call(
+            hTagEls,
+            hTag => hTag.offsetTop >= scrollTop
+          );
           if (topEl) {
-            this.tocItems.forEach(item => this.$set(item, 'active', false));
-            let activeItem = this.tocItems.find(item => item.name == topEl.innerText);
+            this.tocItems.forEach(item => this.$set(item, "active", false));
+            let activeItem = this.tocItems.find(
+              item => item.name == topEl.innerText
+            );
             if (activeItem) {
-              this.$set(activeItem, 'active', true);
+              this.$set(activeItem, "active", true);
             }
           }
           this.timer = null;
         }, 300);
       }
+    },
+    isParent(index) {
+      return this.tocItems.findIndex(item => item.parent === index) > -1;
+    },
+    isHide(item) {
+      return !item.show || (item.parent !== -1 && this.isHide(this.tocItems[item.parent]))
+    },
+    toggle(item, index) {
+      this.tocItems.slice(index).forEach(i => {
+        if (i.parent === index) {
+          i.show = !item.expand;
+        }
+      })
+      item.expand = !item.expand;
+    },
+    tocItemStyle(item, i) {
+      return { 'padding-left': ((item.level - this.minLevel) * 15 + (this.foldable && this.isParent(i) ? 0 : 15)) + 'px' };
     }
   }
-}
+};
 </script>
+
 <style lang="less">
 @import "./theme/github.less";
 .md {
-  overflow: hidden;
   height: 100%;
-  width: 100%;
   display: flex;
-  flex-flow: row nowrap;
+  &.by-left &-toc {
+    order: -1;
+    border-width: 0 1px 0 0;
+  }
+  &-toc,
+  &-con {
+    overflow: auto;
+    overflow: overlay;
+    /* 用于计算子元素offsetTop时将.md-con作为offsetParent */
+    position: relative;
+  }
   &-toc {
     width: 280px;
-    height: inherit;
-    padding: 10px 0;
-    vertical-align: text-bottom;
-    background: #f9f9f9;
-    overflow: auto;
+    border: 1px solid #e1e4e8;
+    border-width: 0 0 0 1px;
+    padding: 1rem;
     &-item {
-      padding: 0 10px;
-      transition: background 0.2s;
-      width: 100%;
-      overflow: hidden;
+      padding: 4px 10px;
+      border: 1px solid transparent;
       cursor: pointer;
-      &:hover {
-        background: #eee;
+      &.active {
+        color: #467fcf;
+        font-weight: bold;
+        background: rgba(70, 127, 207, 0.06);
+        border-color: rgba(70, 127, 207, 0.1);
       }
-      .text {
+      &.hide {
+        display: none;
+      }
+      &:hover {
+        background: rgba(70, 127, 207, 0.06);
+      }
+      .toggle-btn {
+        margin-right: 3px;
         color: #444;
-        white-space: pre-wrap;
-        font-size: 13px;
-        &.active {
-          color: #000;
-          font-weight: bold;
+        font-weight: normal;
+        display: inline-block;
+        transition: all 0.2s;
+        transform: rotate(90deg);
+        &.toggle-collapse {
+          transform: rotate(0);
+        }
+        &:hover {
+          color: rgba(#444, 0.6);
         }
       }
     }
-    &.by-left {
-      border-right-width: 1px;
-      border-right-style: solid;
-      border-right-color: #ddd;
-    }
-    &.by-right {
-      order: 1;
-      border-left-width: 1px;
-      border-left-style: solid;
-      border-left-color: #ddd;
-    }
   }
   &-con {
-    height: inherit;
-    vertical-align: text-bottom;
-    width: calc(100% - 280px - 5px);
-    min-width: 100px;
-    overflow: auto;
-    position: relative;
-    scroll-behavior: smooth;
-    &.by-left {
-      margin-left: 5px;
-      padding-left: 10px;
-    }
-    &.by-right {
-      margin-right: 5px;
-      padding-right: 10px;
-    }
+    flex: 1;
+    // scroll-behavior: smooth;
+    padding: 0 2rem 2rem;
+    line-height: 1.8;
   }
 }
 </style>
